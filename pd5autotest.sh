@@ -12,7 +12,9 @@ for xfile in $1/verif/data/*; do
 
     make -C "$1/verif/scripts" -s run TEST=test_pd MEM_PATH="../data/$benchmark.x"
 
-    output=$(cargo run --release --bin pd5diff $1/verif/golden/$benchmark.trace $1/verif/sim/verilator/test_pd/$benchmark.trace)
+    golden=$(realpath "$1/verif/golden/$benchmark.trace")
+    user=$(realpath "$1/verif/sim/verilator/test_pd/$benchmark.trace")
+    output=$(cargo run --release --bin pd5diff "$golden" "$user")
     echo "$output"
 
     if [[ $output != *"At least one error"* ]]; then
