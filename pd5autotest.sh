@@ -10,7 +10,7 @@ for xfile in $1/verif/data/*; do
     num_benchmarks=$(($num_benchmarks + 1));
     benchmark=$(basename "$xfile" .x)
 
-    make -C $1/verif/scripts -s run TEST=test_pd MEM_PATH=$1/verif/data/$benchmark.x
+    make -C "$1/verif/scripts" -s run TEST=test_pd MEM_PATH="../data/$benchmark.x"
 
     output=$(cargo run --release --bin pd5diff $1/verif/golden/$benchmark.trace $1/verif/sim/verilator/test_pd/$benchmark.trace)
     echo "$output"
