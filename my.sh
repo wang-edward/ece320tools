@@ -11,24 +11,26 @@ for xfile in $1/verif/data/*; do
     num_benchmarks=$(($num_benchmarks + 1));
     benchmark=$(basename "$xfile" .x)
 
+    # make -C $1/verif/scripts -s run TEST=test_pd MEM_PATH=$1/verif/data/$benchmark.x
     make -C "$1/verif/scripts" -s run TEST=test_pd MEM_PATH="../data/$benchmark.x"
 
     golden=$(realpath "$1/verif/golden/$benchmark.trace")
     user=$(realpath "$1/verif/sim/verilator/test_pd/$benchmark.trace")
     output=$(cargo run --release --bin pd5diff "$golden" "$user")
+    # output=$(cargo run --release --bin pd5diff $1/verif/golden/$benchmark.trace $1/verif/sim/verilator/test_pd/$benchmark.trace)
     echo "$output"
 
     if [[ $output != *"At least one error"* ]]; then
        num_passed=$(( num_passed + 1 )) 
     else
-        fails+=("$benchmark")
+        failures+=("$benchmark")
     fi
 done
 echo "$num_passed/$num_benchmarks passed! See output for details on (potential) error messages"
 
-if (( ${#fails[@]} > 0 )); then
+if (( ${#failures[@]} > 0 )); then
     echo "Failed tests:"
-    for f in "${fails[@]}"; do
+    for f in "${failures[@]}"; do
         echo "  - $f"
     done
 fi
