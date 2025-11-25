@@ -2,6 +2,8 @@
 echo "This script will automatically run all the benchmarks you've placed in $1/verif/data, and compare your trace output to the golden trace files using JZJ's autograder!"
 echo "To add more benchmarks, copy the .x files for the desired benchmarks from the rv32-benchmarks repo into $1/verif/data." 
 
+filter="$3"
+
 source $1/env.sh
 
 num_benchmarks=0
@@ -10,6 +12,10 @@ fails=()
 for xfile in $1/verif/data/*; do
     num_benchmarks=$(($num_benchmarks + 1));
     benchmark=$(basename "$xfile" .x)
+
+    if [[ -n "$filter" && "$benchmark" != "$filter" ]]; then
+        continue
+    fi
 
     make -C "$1/verif/scripts" -s run TEST=test_pd MEM_PATH="../data/$benchmark.x"
 
