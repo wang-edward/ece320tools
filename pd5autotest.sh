@@ -6,6 +6,7 @@ source $1/env.sh
 
 num_benchmarks=0
 num_passed=0
+fails=()
 for xfile in $1/verif/data/*; do
     num_benchmarks=$(($num_benchmarks + 1));
     benchmark=$(basename "$xfile" .x)
@@ -19,7 +20,18 @@ for xfile in $1/verif/data/*; do
 
     if [[ $output != *"At least one error"* ]]; then
        num_passed=$(( num_passed + 1 )) 
+    else
+        fails+=("$benchmark")
     fi
 done
 echo "$num_passed/$num_benchmarks passed! See output for details on (potential) error messages"
+
+if (( ${#fails[@]} > 0 )); then
+    echo "Failed tests:"
+    for f in "${fails[@]}"; do
+        echo "  - $f"
+    done
+fi
+
+echo
 echo "Thanks for using PD5 autotest :)"
