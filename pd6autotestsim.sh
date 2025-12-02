@@ -20,7 +20,7 @@ for xfile in $1/verif/data/*; do
 
     make -C "$1/verif/scripts" -s run TEST=test_pd MEM_PATH="../data/$benchmark.x"
 
-    golden=$(realpath "$1/verif/golden/$benchmark.trace")
+    golden=$(realpath "$1/verif/golden_sim/$benchmark.trace")
     user=$(realpath "$1/verif/sim/verilator/test_pd/$benchmark.trace")
     output=$(cargo run --release --bin pd6simdiff "$golden" "$user")
     echo "$output"
